@@ -44,7 +44,6 @@ jobs:
 
   # E2E Test Sub-flows
   e2e_test:
-    needs: test_data_generation
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -64,7 +63,6 @@ jobs:
 
   # Priority-based Execution
   priority_based_execution:
-    needs: test_data_generation
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -78,7 +76,6 @@ jobs:
 
   # Independent Execution
   independent_execution:
-    needs: test_data_generation
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
