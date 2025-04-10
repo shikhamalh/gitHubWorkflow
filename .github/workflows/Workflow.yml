@@ -3,10 +3,10 @@ name: CI-CD Workflow
 on:
   push:
     branches:
-      - main
+      - shimal_test_gitActions_01
   pull_request:
     branches:
-      - main
+      - shimal_test_gitActions_01
 
 jobs:
   # Horizontal Hierarchy
