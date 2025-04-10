@@ -1,7 +1,27 @@
 name: CI-CD Workflow
 
 on:
-  workflow_dispatch:
+  push:
+    branches:
+      - shimal_test_gitActions_01
+  pull_request:
+    branches:
+      - shimal_test_gitActions_01
+
+jobs:
+  # Horizontal Hierarchy
+  test_data_generation:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Generate Test Data
+        run: echo "Generating test data..."
+
+  test_execution:
+    needs: test_data_generation
+    runs-on: ubuntu-latest
     inputs:
       SelectFlow:
         type: choice
@@ -24,36 +44,19 @@ on:
         options:
           - ALL
           - Specific Component
-  push:
-    branches:
-      - shimal_test_gitActions_01
-  pull_request:
-    branches:
-      - shimal_test_gitActions_01
-
-jobs:
-  # Horizontal Hierarchy
-  test_data_generation:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Generate Test Data
-        run: echo "Generating test data..."
-
-  test_execution:
-    needs: test_data_generation
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        flow: [E2E, Pages, Priority]
+    # strategy:
+    #   matrix:
+    #     flow: [E2E, Pages, Priority]
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
       - name: Execute Test Flow
-        run: echo "Executing ${{ matrix.flow }} tests..."
+        run: |
+          if [[ ${{ inputs.SelectModule }} == 'ALL' ]]; then echo "Running End-to-End tests for the flow ${{ inputs.SelectFlow }}"
+          else
+          echo "Running separate module ${{ inputs.SelectModule }} for the flow ${{ inputs.SelectFlow }}"
+          fi
 
   test_data_reconciliation:
     needs: test_execution
