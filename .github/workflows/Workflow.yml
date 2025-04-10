@@ -1,0 +1,95 @@
+name: CI-CD Workflow
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  # Horizontal Hierarchy
+  test_data_generation:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Generate Test Data
+        run: echo "Generating test data..."
+
+  test_execution:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        flow: [E2E, Pages, Priority]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Execute Test Flow
+        run: echo "Executing ${{ matrix.flow }} tests..."
+
+  test_data_reconciliation:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Reconcile Test Data
+        run: echo "Reconciling test data..."
+
+  # E2E Test Sub-flows
+  e2e_test:
+    needs: test_data_generation
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        job: [sql_to_azure, nas_to_azure, s3_to_azure, cybase_to_azure, HDFS_to_Azure, REST_API_to_Azure, RUN_ALL_E2E]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Run E2E Job
+        run: |
+          echo "Running ${{ matrix.job }} job..."
+          echo "Register dataset"
+          echo "Register schema"
+          echo "Register task"
+          echo "Register task flows"
+          echo "Others"
+
+  # Priority-based Execution
+  priority_based_execution:
+    needs: test_data_generation
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        priority: [P1, P2, P3, P4]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Run Priority Tests
+        run: echo "Running tests with priority ${{ matrix.priority }}..."
+
+  # Independent Execution
+  independent_execution:
+    needs: test_data_generation
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Register Dataset
+        run: echo "Register dataset"
+
+      - name: Register Schema
+        run: echo "Register schema"
+
+      - name: Register Task
+        run: echo "Register task"
+
+      - name: Register Task Flows
+        run: echo "Register task flows"
