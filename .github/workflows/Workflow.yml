@@ -53,9 +53,10 @@ jobs:
 
       - name: Execute Test Flow
         run: |
-          if [[ ${{ inputs.SelectModule }} == 'ALL' ]]; then echo "Running End-to-End tests for the flow ${{ inputs.SelectFlow }}"
+          if [[ ${{ inputs.SelectModule }} == 'ALL' ]]; then 
+            echo "Running End-to-End tests for the flow ${{ inputs.SelectFlow }}"
           else
-          echo "Running separate module ${{ inputs.SelectModule }} for the flow ${{ inputs.SelectFlow }}"
+            echo "Running separate module ${{ inputs.SelectModule }} for the flow ${{ inputs.SelectFlow }}"
           fi
 
   test_data_reconciliation:
