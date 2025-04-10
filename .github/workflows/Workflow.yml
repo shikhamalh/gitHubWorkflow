@@ -20,6 +20,7 @@ jobs:
         run: echo "Generating test data..."
 
   test_execution:
+    needs: test_data_generation
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -32,6 +33,7 @@ jobs:
         run: echo "Executing ${{ matrix.flow }} tests..."
 
   test_data_reconciliation:
+    needs: test_execution
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
