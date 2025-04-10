@@ -1,6 +1,29 @@
 name: CI-CD Workflow
 
 on:
+  workflow_dispatch:
+    inputs:
+      SelectFlow:
+        type: choice
+        required: true
+        description: Which EndToEnd flow should be used for execution?
+        default: sql_to_azure
+        options: 
+          - sql_to_azure
+          - nas_to_azure
+          - s3_to_azure
+          - cybase_to_azure
+          - HDFS_to_Azure
+          - REST_API_to_Azure
+          - RUN_ALL_E2E_Flows
+      SelectModule:
+        type: choice
+        required: true
+        description: Which module/component you want to run for resp. envt?
+        default: ALL
+        options:
+          - ALL
+          - Specific Component
   push:
     branches:
       - shimal_test_gitActions_01
