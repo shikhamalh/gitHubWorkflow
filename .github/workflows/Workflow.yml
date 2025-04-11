@@ -52,15 +52,13 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-
       - name: Execute Test Flow
         run: |
-          if [[ ${{ github.event.inputs.SelectModule }} == 'ALL' ]]; then 
-            echo "Running End-to-End tests for the flow ${{ github.event.inputs.SelectFlow }}"
+          if [[ "${{ inputs.SelectModule }}" == 'ALL' ]]; then 
+            echo "Running End-to-End tests for the flow ${{ inputs.SelectFlow }}"
           else
-            echo "Running separate module ${{ github.event.inputs.SelectModule }} for the flow ${{ github.event.inputs.SelectFlow }}"
+            echo "Running separate module ${{ inputs.SelectModule }} for the flow ${{ inputs.SelectFlow }}"
           fi
-
   test_data_reconciliation:
     needs: test_execution
     runs-on: ubuntu-latest
