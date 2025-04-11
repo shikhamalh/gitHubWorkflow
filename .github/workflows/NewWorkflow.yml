@@ -1,4 +1,4 @@
-name: CI-CD Workflow
+name: Test Inputs Workflow
 
 on:
   workflow_dispatch:
