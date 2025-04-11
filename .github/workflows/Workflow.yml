@@ -24,13 +24,7 @@ on:
         options:
           - ALL
           - Specific Component
-  push:
-    branches:
-      - shimal_test_gitActions_01
-  pull_request:
-    branches:
-      - shimal_test_gitActions_01
-
+          
 jobs:
   # Horizontal Hierarchy
   test_data_generation:
