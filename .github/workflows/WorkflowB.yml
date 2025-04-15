@@ -67,7 +67,7 @@
           uses: actions/checkout@v2
 
         - name: Run E2E Job
-          run:
+          run: |
             echo "Running ${{ github.event.inputs.SelectFlow }} job"
             if [[ "${{ github.event.inputs.SelectFlow }}" == 'sql_to_azure' && "${{ github.event.inputs.SelectExecutionType }}" == "End to End" ]]; then
               echo "JobA"
