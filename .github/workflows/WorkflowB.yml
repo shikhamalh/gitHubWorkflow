@@ -70,18 +70,20 @@
           run:
             echo "Running ${{ github.event.inputs.SelectFlow }} job"
             if [[ "${{ github.event.inputs.SelectFlow }}" == 'sql_to_azure' && "${{ github.event.inputs.SelectExecutionType }}" == "End to End" ]]; then
-            echo "JobA"
-            python test_E2E_SQLToAzure.py
+              echo "JobA"
+              python test_E2E_SQLToAzure.py
             elif [[ "${{ github.event.inputs.SelectFlow }}" == 'nas_to_azure' && "${{ github.event.inputs.SelectExecutionType }}" == "End to End" ]]; then
-            echo "Job B"
-            python test_E2E_NASToAzure.py
+              echo "Job B"
+              python test_E2E_NASToAzure.py
             else
-            echo "Any other job selected"
+              echo "Any other job selected"
+              exit 0  # Exit the job to skip further execution
             fi
+
     module_test:
       needs: test_data_generation
       runs-on: ubuntu-latest
-      continue-on-error: true
+      continue-on-error: false
       steps:
         - name: Checkout code
           uses: actions/checkout@v2
@@ -97,4 +99,7 @@
                   echo "Job C2"
                   python test_RegisterSchema.py
                 fi
+            else
+              echo "Skipping job execution based on condition"
+              exit 0  # Exit the job to skip further execution
             fi    
