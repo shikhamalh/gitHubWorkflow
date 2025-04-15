@@ -138,18 +138,18 @@ jobs:
 #      - name: Run Priority Tests
 #        run: echo "Running tests with priority ${{ matrix.priority }}..."
 
-  # Independent Execution
-  independent_execution:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+  # # Independent Execution
+  # independent_execution:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v2
 
-      - name: Register Dataset
-        run: echo "Register dataset"
+  #     - name: Register Dataset
+  #       run: echo "Register dataset"
 
-      - name: Register Schema
-        run: echo "Register schema"
+  #     - name: Register Schema
+  #       run: echo "Register schema"
 
       - name: Register Task
         run: echo "Register task"
