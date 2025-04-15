@@ -68,14 +68,15 @@
 
         - name: Run E2E Job
           run: |
-            echo "Running ${{ github.event.inputs.SelectFlow }} job"
-            if [[ "${{ github.event.inputs.SelectFlow }}" == 'sql_to_azure' && "${{github.event.inputs.SelectExecutionType}}" == "End to End"]]; then 
-             echo "JobA"
-             python test_E2E_SQLToAzure.py
-            elif [[ "${{ github.event.inputs.SelectFlow }}" == 'nas_to_azure' && "${{github.event.inputs.SelectExecutionType}}" == "End to End"]]; then
-             echo "Job B"
-             python test_E2E_NASToAzure.py
-            else echo "Any other job selected "
+           echo "Running sql_to_azure job"
+            if [[ "sql_to_azure" == 'sql_to_azure' && "End to End" == "End to End" ]]; then 
+                echo "JobA"
+                python test_E2E_SQLToAzure.py
+            elif [[ "sql_to_azure" == 'nas_to_azure' && "End to End" == "End to End" ]]; then
+                echo "Job B"
+                python test_E2E_NASToAzure.py
+            else
+                echo "Any other job selected"
             fi
     module_test:
       needs: test_data_generation
@@ -87,13 +88,13 @@
 
         - name: Run Specific Component
           run: |
-            echo "Running ${{ github.event.inputs.SelectFlow }} job"
-            if [[ "${{ github.event.inputs.SelectFlow }}" == 'sql_to_azure' && "${{github.event.inputs.SelectExecutionType }}" == "Specific Component"]]; then
-                if [[ "${{ github.event.inputs.SelectModule }}" == 'Register Dataset' ]]; then
-                  echo "Job C1"
-                  python test_RegisterDataset.py
-                elif [[ "${{ github.event.inputs.SelectModule }}" == 'Register Schema' ]]; then
-                  echo "Job C2"
-                  python test_RegisterSchema.py
+            echo "Running sql_to_azure job"
+            if [[ "sql_to_azure" == 'sql_to_azure' && "End to End" == "Specific Component" ]]; then
+                if [[ "NA" == 'Register Dataset' ]]; then
+                    echo "Job C1"
+                    python test_RegisterDataset.py
+                elif [[ "NA" == 'Register Schema' ]]; then
+                    echo "Job C2"
+                    python test_RegisterSchema.py
                 fi
-            fi    
+            fi  
