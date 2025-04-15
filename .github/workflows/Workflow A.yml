@@ -1,4 +1,4 @@
-name: Test Inputs Workflow N
+name: Workflow A
 
 on:
   workflow_dispatch:
@@ -8,7 +8,7 @@ on:
         required: true
         description: Which flow should be used for execution?
         default: sql_to_azure
-        options: 
+        options:
           - sql_to_azure
           - nas_to_azure
           - s3_to_azure
@@ -57,27 +57,45 @@ jobs:
 
       - name: Generate Test Data
         run: echo "Generating test data..."
-
-  test_execution:
+  e2e_test:
     needs: test_data_generation
     runs-on: ubuntu-latest
+    continue-on-error: true
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-      - name: Execute Test Flow
-#        run: |
-#          echo "Register dataset"
-#          echo "Register schema"
-#          echo "Register task"
-#          echo "Register task flows"
 
+      - name: Run E2E Job
+        run: |
+          echo "Running ${{ github.event.inputs.SelectFlow }} job"
+          if [[ "${{ github.event.inputs.SelectFlow }}" == 'sql_to_azure' && "${{github.event.inputs.SelectExecutionType" == "End to End"]]; then 
+           echo "JobA"
+           python test_E2E_SQLToAzure.py
+          else if [[ "${{ github.event.inputs.SelectFlow }}" == 'nas_to_azure' && "${{github.event.inputs.SelectExecutionType" == "End to End"]]; then
+           echo "Job B"
+           python test_E2E_NASToAzure.py
+          else echo "Any other job selected "
+  module_test:
+    needs: test_data_generation
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-#        run: |
-#          if [[ "${{ inputs.SelectModule }}" == 'ALL' ]]; then
-#            echo "Running End-to-End tests for the flow ${{ inputs.SelectFlow }}"
-#          else
-#            echo "Running separate module ${{ inputs.SelectModule }} for the flow ${{ inputs.SelectFlow }}"
-#          fi
+      - name: Run Specific Component
+        run: |
+          echo "Running ${{ github.event.inputs.SelectFlow }} job"
+          if [[ "${{ github.event.inputs.SelectFlow }}" == 'sql_to_azure' && "${{github.event.inputs.SelectExecutionType" == "Specific Component"]]; then
+              if[[ "${{ github.event.inputs.SelectModule }}" == 'Register Dataset' ]]; then
+                echo "Job C1"
+                python test_RegisterDataset.py
+              else if[[ "${{ github.event.inputs.SelectModule }}" == 'Register Schema' ]]; then
+                echo "Job C2"
+                python test_RegisterSchema.py
+              fi
+          fi    
+
   test_data_reconciliation:
     needs: test_execution
     runs-on: ubuntu-latest
@@ -89,26 +107,26 @@ jobs:
         run: echo "Reconciling test data..."
 
   # E2E Test Sub-flows
-  e2e_test:
-    needs: test_execution
-    runs-on: ubuntu-latest
-    continue-on-error: true
-    steps:
-       - name: Checkout code
-         uses: actions/checkout@v2
+#  e2e_test:
+#    needs: test_execution
+#    runs-on: ubuntu-latest
+#    continue-on-error: true
+#    steps:
+#       - name: Checkout code
+#         uses: actions/checkout@v2
+#
+#       - name: Run E2E Job
+#         run: |
+#          echo "Running ${{ github.event.inputs.SelectFlow }} job"
+#          if [[ "${{ github.event.inputs.SelectFlow }}" == 'sql_to_azure']];
+#           echo "JobA"
+#           then python test_E2E_SQLToAzure.py
+#          else if [[ "${{ github.event.inputs.SelectFlow }}" == 'nas_to_azure']];
+#           echo "Job B"
+#           then python test_E2E_NASToAzure.py
+#          else echo "Any other job selected "
 
-       - name: Run E2E Job
-         run: |
-          echo "Running ${{ github.event.inputs.SelectFlow }} job"
-          if [[ "${{ github.event.inputs.SelectFlow }}" == 'sql_to_azure']]; 
-           echo "JobA"
-           then python test_E2E_SQLToAzure.py
-          else if [[ "${{ github.event.inputs.SelectFlow }}" == 'nas_to_azure']]; 
-           echo "Job B"
-           then python test_E2E_NASToAzure.py
-          else echo "Any other job selected "
-           
-         
+
 
 #    strategy:
 #        matrix:
@@ -139,20 +157,20 @@ jobs:
 #        run: echo "Running tests with priority ${{ matrix.priority }}..."
 
   # Independent Execution
-  independent_execution:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Register Dataset
-        run: echo "Register dataset"
-
-      - name: Register Schema
-        run: echo "Register schema"
-
-      - name: Register Task
-        run: echo "Register task"
-
-      - name: Register Task Flows
-        run: echo "Register task flows"
+#  independent_execution:
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Checkout code
+#        uses: actions/checkout@v2
+#
+#      - name: Register Dataset
+#        run: echo "Register dataset"
+#
+#      - name: Register Schema
+#        run: echo "Register schema"
+#
+#      - name: Register Task
+#        run: echo "Register task"
+#
+#      - name: Register Task Flows
+#        run: echo "Register task flows"
