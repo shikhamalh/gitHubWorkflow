@@ -151,8 +151,8 @@ jobs:
   #     - name: Register Schema
   #       run: echo "Register schema"
 
-      - name: Register Task
-        run: echo "Register task"
+      # - name: Register Task
+      #   run: echo "Register task"
 
-      - name: Register Task Flows
-        run: echo "Register task flows"
+      # - name: Register Task Flows
+      #   run: echo "Register task flows"
