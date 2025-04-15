@@ -1,158 +1,158 @@
-name: Test Inputs Workflow N
-
-on:
-  workflow_dispatch:
-    inputs:
-      SelectFlow:
-        type: choice
-        required: true
-        description: Which flow should be used for execution?
-        default: sql_to_azure
-        options: 
-          - sql_to_azure
-          - nas_to_azure
-          - s3_to_azure
-          - cybase_to_azure
-          - HDFS_to_Azure
-          - REST_API_to_Azure
-          - RUN_ALL_E2E_Flows
-      SelectExecutionType:
-        type: choice
-        required: true
-        description: Which RunType you want to run for resp. flow?
-        default: End to End
-        options:
-          - End to End
-          - Specific Component
-          - Priority based
-      SelectModule:
-        type: choice
-        required: false
-        description: If RunType is Specific Component then please choose module name. Otherwise leave it blank.
-        options:
-          - Register Dataset
-          - Register Schema
-          - Register task
-          - Register taskflows
-      SelectPriority:
-        type: choice
-        required: false
-        description: If RunType is Priority based then please choose Priority. Otherwise leave it blank.
-        options:
-          - P1
-          - P2
-          - P3
-          - P4
-
-
-
-jobs:
-  # Horizontal Hierarchy
-  test_data_generation:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Generate Test Data
-        run: echo "Generating test data..."
-
-  test_execution:
-    needs: test_data_generation
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-      - name: Execute Test Flow
-#        run: |
-#          echo "Register dataset"
-#          echo "Register schema"
-#          echo "Register task"
-#          echo "Register task flows"
-
-
-#        run: |
-#          if [[ "${{ inputs.SelectModule }}" == 'ALL' ]]; then
-#            echo "Running End-to-End tests for the flow ${{ inputs.SelectFlow }}"
-#          else
-#            echo "Running separate module ${{ inputs.SelectModule }} for the flow ${{ inputs.SelectFlow }}"
-#          fi
-  test_data_reconciliation:
-    needs: test_execution
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Reconcile Test Data
-        run: echo "Reconciling test data..."
-
-  # E2E Test Sub-flows
-  e2e_test:
-    needs: test_execution
-    runs-on: ubuntu-latest
-    continue-on-error: true
-    steps:
-       - name: Checkout code
-         uses: actions/checkout@v2
-
-       - name: Run E2E Job
-         run: |
-          echo "Running ${{ github.event.inputs.SelectFlow }} job"
-          if [[ "${{ github.event.inputs.SelectFlow }}" == 'sql_to_azure']]; 
-           echo "JobA"
-           then python test_E2E_SQLToAzure.py
-          else if [[ "${{ github.event.inputs.SelectFlow }}" == 'nas_to_azure']]; 
-           echo "Job B"
-           then python test_E2E_NASToAzure.py
-          else echo "Any other job selected "
-           
-         
-
-#    strategy:
-#        matrix:
-#  #        job: [sql_to_azure, nas_to_azure, s3_to_azure, cybase_to_azure, HDFS_to_Azure, REST_API_to_Azure, RUN_ALL_E2E]
-#          job: [sql_to_azure, nas_to_azure, s3_to_azure]
-#    steps:
-#      - name: Checkout code
-#        uses: actions/checkout@v2
+#name: Test Inputs Workflow N
 #
-#      - name: Run E2E Jobs in parallel
-#        run: |
-#          echo "Running ${{ matrix.job }} job..."
-#          if [[ "${{ matrix.job }}" == 'sql_to_azure'  ]]; then python test_E2E_SQLToAzure.py
-#          else if [[ "${{ matrix.job }}" == 'nas_to_azure' ]]; then python test_E2E_NASToAzure.py
-#          else if [[ "${{ matrix.job }}" == 's3_to_azure' ]]; then python test_E2E_s3ToAzure.py
-
-#  # Priority-based Execution
-#  priority_based_execution:
+#on:
+#  workflow_dispatch:
+#    inputs:
+#      SelectFlow:
+#        type: choice
+#        required: true
+#        description: Which flow should be used for execution?
+#        default: sql_to_azure
+#        options:
+#          - sql_to_azure
+#          - nas_to_azure
+#          - s3_to_azure
+#          - cybase_to_azure
+#          - HDFS_to_Azure
+#          - REST_API_to_Azure
+#          - RUN_ALL_E2E_Flows
+#      SelectExecutionType:
+#        type: choice
+#        required: true
+#        description: Which RunType you want to run for resp. flow?
+#        default: End to End
+#        options:
+#          - End to End
+#          - Specific Component
+#          - Priority based
+#      SelectModule:
+#        type: choice
+#        required: false
+#        description: If RunType is Specific Component then please choose module name. Otherwise leave it blank.
+#        options:
+#          - Register Dataset
+#          - Register Schema
+#          - Register task
+#          - Register taskflows
+#      SelectPriority:
+#        type: choice
+#        required: false
+#        description: If RunType is Priority based then please choose Priority. Otherwise leave it blank.
+#        options:
+#          - P1
+#          - P2
+#          - P3
+#          - P4
+#
+#
+#
+#jobs:
+#  # Horizontal Hierarchy
+#  test_data_generation:
 #    runs-on: ubuntu-latest
-#    strategy:
-#      matrix:
-#        priority: [P1, P2, P3, P4]
+#
 #    steps:
 #      - name: Checkout code
 #        uses: actions/checkout@v2
 #
-#      - name: Run Priority Tests
-#        run: echo "Running tests with priority ${{ matrix.priority }}..."
-
-  # # Independent Execution
-  # independent_execution:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Checkout code
-  #       uses: actions/checkout@v2
-
-  #     - name: Register Dataset
-  #       run: echo "Register dataset"
-
-  #     - name: Register Schema
-  #       run: echo "Register schema"
-
-      # - name: Register Task
-      #   run: echo "Register task"
-
-      # - name: Register Task Flows
-      #   run: echo "Register task flows"
+#      - name: Generate Test Data
+#        run: echo "Generating test data..."
+#
+#  test_execution:
+#    needs: test_data_generation
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Checkout code
+#        uses: actions/checkout@v2
+#      - name: Execute Test Flow
+##        run: |
+##          echo "Register dataset"
+##          echo "Register schema"
+##          echo "Register task"
+##          echo "Register task flows"
+#
+#
+##        run: |
+##          if [[ "${{ inputs.SelectModule }}" == 'ALL' ]]; then
+##            echo "Running End-to-End tests for the flow ${{ inputs.SelectFlow }}"
+##          else
+##            echo "Running separate module ${{ inputs.SelectModule }} for the flow ${{ inputs.SelectFlow }}"
+##          fi
+#  test_data_reconciliation:
+#    needs: test_execution
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Checkout code
+#        uses: actions/checkout@v2
+#
+#      - name: Reconcile Test Data
+#        run: echo "Reconciling test data..."
+#
+#  # E2E Test Sub-flows
+#  e2e_test:
+#    needs: test_execution
+#    runs-on: ubuntu-latest
+#    continue-on-error: true
+#    steps:
+#       - name: Checkout code
+#         uses: actions/checkout@v2
+#
+#       - name: Run E2E Job
+#         run: |
+#          echo "Running ${{ github.event.inputs.SelectFlow }} job"
+#          if [[ "${{ github.event.inputs.SelectFlow }}" == 'sql_to_azure']];
+#           echo "JobA"
+#           then python test_E2E_SQLToAzure.py
+#          else if [[ "${{ github.event.inputs.SelectFlow }}" == 'nas_to_azure']];
+#           echo "Job B"
+#           then python test_E2E_NASToAzure.py
+#          else echo "Any other job selected "
+#
+#
+#
+##    strategy:
+##        matrix:
+##  #        job: [sql_to_azure, nas_to_azure, s3_to_azure, cybase_to_azure, HDFS_to_Azure, REST_API_to_Azure, RUN_ALL_E2E]
+##          job: [sql_to_azure, nas_to_azure, s3_to_azure]
+##    steps:
+##      - name: Checkout code
+##        uses: actions/checkout@v2
+##
+##      - name: Run E2E Jobs in parallel
+##        run: |
+##          echo "Running ${{ matrix.job }} job..."
+##          if [[ "${{ matrix.job }}" == 'sql_to_azure'  ]]; then python test_E2E_SQLToAzure.py
+##          else if [[ "${{ matrix.job }}" == 'nas_to_azure' ]]; then python test_E2E_NASToAzure.py
+##          else if [[ "${{ matrix.job }}" == 's3_to_azure' ]]; then python test_E2E_s3ToAzure.py
+#
+##  # Priority-based Execution
+##  priority_based_execution:
+##    runs-on: ubuntu-latest
+##    strategy:
+##      matrix:
+##        priority: [P1, P2, P3, P4]
+##    steps:
+##      - name: Checkout code
+##        uses: actions/checkout@v2
+##
+##      - name: Run Priority Tests
+##        run: echo "Running tests with priority ${{ matrix.priority }}..."
+#
+#  # # Independent Execution
+#  # independent_execution:
+#  #   runs-on: ubuntu-latest
+#  #   steps:
+#  #     - name: Checkout code
+#  #       uses: actions/checkout@v2
+#
+#  #     - name: Register Dataset
+#  #       run: echo "Register dataset"
+#
+#  #     - name: Register Schema
+#  #       run: echo "Register schema"
+#
+#      # - name: Register Task
+#      #   run: echo "Register task"
+#
+#      # - name: Register Task Flows
+#      #   run: echo "Register task flows"

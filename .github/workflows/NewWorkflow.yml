@@ -1,115 +1,115 @@
-name: Test Inputs Workflow
-
-on:
-  workflow_dispatch:
-    inputs:
-      SelectFlow:
-        type: choice
-        required: true
-        description: Which EndToEnd flow should be used for execution?
-        default: sql_to_azure
-        options: 
-          - sql_to_azure
-          - nas_to_azure
-          - s3_to_azure
-          - cybase_to_azure
-          - HDFS_to_Azure
-          - REST_API_to_Azure
-          - RUN_ALL_E2E_Flows
-      SelectModule:
-        type: choice
-        required: true
-        description: Which module/component you want to run for resp. envt?
-        default: ALL
-        options:
-          - ALL
-          - Specific Component
-
-jobs:
-  # Horizontal Hierarchy
-  test_data_generation:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Generate Test Data
-        run: echo "Generating test data..."
-
-  test_execution:
-    needs: test_data_generation
-    runs-on: ubuntu-latest
-    # strategy:
-    #   matrix:
-    #     flow: [E2E, Pages, Priority]
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-      - name: Execute Test Flow
-        run: |
-          if [[ "${{ inputs.SelectModule }}" == 'ALL' ]]; then 
-            echo "Running End-to-End tests for the flow ${{ inputs.SelectFlow }}"
-          else
-            echo "Running separate module ${{ inputs.SelectModule }} for the flow ${{ inputs.SelectFlow }}"
-          fi
-  test_data_reconciliation:
-    needs: test_execution
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Reconcile Test Data
-        run: echo "Reconciling test data..."
-
-  # E2E Test Sub-flows
-  e2e_test:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        job: [sql_to_azure, nas_to_azure, s3_to_azure, cybase_to_azure, HDFS_to_Azure, REST_API_to_Azure, RUN_ALL_E2E]
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Run E2E Job
-        run: |
-          echo "Running ${{ matrix.job }} job..."
-          echo "Register dataset"
-          echo "Register schema"
-          echo "Register task"
-          echo "Register task flows"
-          echo "Others"
-
-  # Priority-based Execution
-  priority_based_execution:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        priority: [P1, P2, P3, P4]
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Run Priority Tests
-        run: echo "Running tests with priority ${{ matrix.priority }}..."
-
-  # Independent Execution
-  independent_execution:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Register Dataset
-        run: echo "Register dataset"
-
-      - name: Register Schema
-        run: echo "Register schema"
-
-      - name: Register Task
-        run: echo "Register task"
-
-      - name: Register Task Flows
-        run: echo "Register task flows"
+#name: Test Inputs Workflow
+#
+#on:
+#  workflow_dispatch:
+#    inputs:
+#      SelectFlow:
+#        type: choice
+#        required: true
+#        description: Which EndToEnd flow should be used for execution?
+#        default: sql_to_azure
+#        options:
+#          - sql_to_azure
+#          - nas_to_azure
+#          - s3_to_azure
+#          - cybase_to_azure
+#          - HDFS_to_Azure
+#          - REST_API_to_Azure
+#          - RUN_ALL_E2E_Flows
+#      SelectModule:
+#        type: choice
+#        required: true
+#        description: Which module/component you want to run for resp. envt?
+#        default: ALL
+#        options:
+#          - ALL
+#          - Specific Component
+#
+#jobs:
+#  # Horizontal Hierarchy
+#  test_data_generation:
+#    runs-on: ubuntu-latest
+#
+#    steps:
+#      - name: Checkout code
+#        uses: actions/checkout@v2
+#
+#      - name: Generate Test Data
+#        run: echo "Generating test data..."
+#
+#  test_execution:
+#    needs: test_data_generation
+#    runs-on: ubuntu-latest
+#    # strategy:
+#    #   matrix:
+#    #     flow: [E2E, Pages, Priority]
+#    steps:
+#      - name: Checkout code
+#        uses: actions/checkout@v2
+#      - name: Execute Test Flow
+#        run: |
+#          if [[ "${{ inputs.SelectModule }}" == 'ALL' ]]; then
+#            echo "Running End-to-End tests for the flow ${{ inputs.SelectFlow }}"
+#          else
+#            echo "Running separate module ${{ inputs.SelectModule }} for the flow ${{ inputs.SelectFlow }}"
+#          fi
+#  test_data_reconciliation:
+#    needs: test_execution
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Checkout code
+#        uses: actions/checkout@v2
+#
+#      - name: Reconcile Test Data
+#        run: echo "Reconciling test data..."
+#
+#  # E2E Test Sub-flows
+#  e2e_test:
+#    runs-on: ubuntu-latest
+#    strategy:
+#      matrix:
+#        job: [sql_to_azure, nas_to_azure, s3_to_azure, cybase_to_azure, HDFS_to_Azure, REST_API_to_Azure, RUN_ALL_E2E]
+#    steps:
+#      - name: Checkout code
+#        uses: actions/checkout@v2
+#
+#      - name: Run E2E Job
+#        run: |
+#          echo "Running ${{ matrix.job }} job..."
+#          echo "Register dataset"
+#          echo "Register schema"
+#          echo "Register task"
+#          echo "Register task flows"
+#          echo "Others"
+#
+#  # Priority-based Execution
+#  priority_based_execution:
+#    runs-on: ubuntu-latest
+#    strategy:
+#      matrix:
+#        priority: [P1, P2, P3, P4]
+#    steps:
+#      - name: Checkout code
+#        uses: actions/checkout@v2
+#
+#      - name: Run Priority Tests
+#        run: echo "Running tests with priority ${{ matrix.priority }}..."
+#
+#  # Independent Execution
+#  independent_execution:
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Checkout code
+#        uses: actions/checkout@v2
+#
+#      - name: Register Dataset
+#        run: echo "Register dataset"
+#
+#      - name: Register Schema
+#        run: echo "Register schema"
+#
+#      - name: Register Task
+#        run: echo "Register task"
+#
+#      - name: Register Task Flows
+#        run: echo "Register task flows"
