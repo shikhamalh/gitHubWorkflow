@@ -1,97 +1,97 @@
-name: Workflow_B
-#Updated
-on:
-  workflow_dispatch:
-    inputs:
-      SelectFlow:
-        type: choice
-        required: true
-        description: Which flow should be used for execution?
-        default: sql_to_azure
-        options:
-          - sql_to_azure
-          - nas_to_azure
-          - s3_to_azure
-          - cybase_to_azure
-          - HDFS_to_Azure
-          - REST_API_to_Azure
-          - RUN_ALL_E2E_Flows
-      SelectExecutionType:
-        type: choice
-        required: true
-        description: Which RunType you want to run for resp. flow?
-        default: End to End
-        options:
-          - End to End
-          - Specific Component
-          - Priority based
-      SelectModule:
-        type: choice
-        required: false
-        description: If RunType is Specific Component then please choose module name. Otherwise leave it blank.
-        options:
-          - Register Dataset
-          - Register Schema
-          - Register task
-          - Register taskflows
-      SelectPriority:
-        type: choice
-        required: false
-        description: If RunType is Priority based then please choose Priority. Otherwise leave it blank.
-        options:
-          - P1
-          - P2
-          - P3
-          - P4
+  name: Workflow_B
+  #Updated
+  on:
+    workflow_dispatch:
+      inputs:
+        SelectFlow:
+          type: choice
+          required: true
+          description: Which flow should be used for execution?
+          default: sql_to_azure
+          options:
+            - sql_to_azure
+            - nas_to_azure
+            - s3_to_azure
+            - cybase_to_azure
+            - HDFS_to_Azure
+            - REST_API_to_Azure
+            - RUN_ALL_E2E_Flows
+        SelectExecutionType:
+          type: choice
+          required: true
+          description: Which RunType you want to run for resp. flow?
+          default: End to End
+          options:
+            - End to End
+            - Specific Component
+            - Priority based
+        SelectModule:
+          type: choice
+          required: false
+          description: If RunType is Specific Component then please choose module name. Otherwise leave it blank.
+          options:
+            - Register Dataset
+            - Register Schema
+            - Register task
+            - Register taskflows
+        SelectPriority:
+          type: choice
+          required: false
+          description: If RunType is Priority based then please choose Priority. Otherwise leave it blank.
+          options:
+            - P1
+            - P2
+            - P3
+            - P4
 
 
-jobs:
-  # Horizontal Hierarchy
-  test_data_generation:
-    runs-on: ubuntu-latest
+  jobs:
+    # Horizontal Hierarchy
+    test_data_generation:
+      runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+      steps:
+        - name: Checkout code
+          uses: actions/checkout@v2
 
-      - name: Generate Test Data
-        run: echo "Generating test data..."
-  e2e_test:
-    needs: test_data_generation
-    runs-on: ubuntu-latest
-    continue-on-error: true
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+        - name: Generate Test Data
+          run: echo "Generating test data..."
+    e2e_test:
+      needs: test_data_generation
+      runs-on: ubuntu-latest
+      continue-on-error: true
+      steps:
+        - name: Checkout code
+          uses: actions/checkout@v2
 
-      - name: Run E2E Job
-        run: |
-          echo "Running ${{ github.event.inputs.SelectFlow }} job"
-          if [[ "${{ github.event.inputs.SelectFlow }}" == 'sql_to_azure' && "${{github.event.inputs.SelectExecutionType" == "End to End"]]; then 
-           echo "JobA"
-           python test_E2E_SQLToAzure.py
-          elif [[ "${{ github.event.inputs.SelectFlow }}" == 'nas_to_azure' && "${{github.event.inputs.SelectExecutionType" == "End to End"]]; then
-           echo "Job B"
-           python test_E2E_NASToAzure.py
-          else echo "Any other job selected "
-          fi
-  module_test:
-    needs: test_data_generation
-    runs-on: ubuntu-latest
-    continue-on-error: true
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+        - name: Run E2E Job
+          run: |
+            echo "Running ${{ github.event.inputs.SelectFlow }} job"
+            if [[ "${{ github.event.inputs.SelectFlow }}" == 'sql_to_azure' && "${{github.event.inputs.SelectExecutionType}}" == "End to End"]]; then 
+             echo "JobA"
+             python test_E2E_SQLToAzure.py
+            elif [[ "${{ github.event.inputs.SelectFlow }}" == 'nas_to_azure' && "${{github.event.inputs.SelectExecutionType}}" == "End to End"]]; then
+             echo "Job B"
+             python test_E2E_NASToAzure.py
+            else echo "Any other job selected "
+            fi
+    module_test:
+      needs: test_data_generation
+      runs-on: ubuntu-latest
+      continue-on-error: true
+      steps:
+        - name: Checkout code
+          uses: actions/checkout@v2
 
-      - name: Run Specific Component
-        run: |
-          echo "Running ${{ github.event.inputs.SelectFlow }} job"
-          if [[ "${{ github.event.inputs.SelectFlow }}" == 'sql_to_azure' && "${{github.event.inputs.SelectExecutionType" == "Specific Component"]]; then
-              if[[ "${{ github.event.inputs.SelectModule }}" == 'Register Dataset' ]]; then
-                echo "Job C1"
-                python test_RegisterDataset.py
-              elif[[ "${{ github.event.inputs.SelectModule }}" == 'Register Schema' ]]; then
-                echo "Job C2"
-                python test_RegisterSchema.py
-              fi
-          fi    
+        - name: Run Specific Component
+          run: |
+            echo "Running ${{ github.event.inputs.SelectFlow }} job"
+            if [[ "${{ github.event.inputs.SelectFlow }}" == 'sql_to_azure' && "${{github.event.inputs.SelectExecutionType" == "Specific Component"]]; then
+                if [[ "${{ github.event.inputs.SelectModule }}" == 'Register Dataset' ]]; then
+                  echo "Job C1"
+                  python test_RegisterDataset.py
+                elif [[ "${{ github.event.inputs.SelectModule }}" == 'Register Schema' ]]; then
+                  echo "Job C2"
+                  python test_RegisterSchema.py
+                fi
+            fi    
