@@ -91,7 +91,7 @@
         - name: Run Specific Component
           run: |
             echo "Running ${{ github.event.inputs.SelectFlow }} job"
-            if [[ "${{ github.event.inputs.SelectFlow }}" == 'sql_to_azure' && "${{github.event.inputs.SelectExecutionType }}" == "Specific Component"]]; then
+            if [[ "${{ github.event.inputs.SelectFlow }}" == 'sql_to_azure' && "${{github.event.inputs.SelectExecutionType }}" == "Specific Component" ]]; then
                 if [[ "${{ github.event.inputs.SelectModule }}" == 'Register Dataset' ]]; then
                   echo "Job C1"
                   python test_RegisterDataset.py
